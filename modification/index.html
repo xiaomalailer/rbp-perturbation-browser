@@ -217,7 +217,7 @@
       <div class="modlist" id="modlist"></div>
 
       <div id="dendro-missing" class="dendro-missing" style="display:none">
-        No dendrogram data in this file — re-export with export_for_browser_v4.py to see the clustering tree here.
+        HDBSCAN is density-based and does not produce a Ward dendrogram. The matrix is grouped by HDBSCAN cluster, with noise shown separately.
       </div>
       <div id="heatgrid">
         <div id="dendro-corner"></div>
@@ -280,7 +280,7 @@
   <section class="panel" id="zoomsection" style="grid-column:1/-1;display:none">
     <div class="phead">
       <h2>Zoomed selection</h2>
-      <span class="hint" id="zoomhint">drag-select a block on the main map, or click a dendrogram branch</span>
+      <span class="hint" id="zoomhint">drag-select a block on the main map</span>
     </div>
     <div class="pbody">
       <div id="zoomdendro-wrap">
@@ -308,12 +308,10 @@
     </div>
   </section>
   <section class="figure-gallery">
-    <div class="phead"><h2>UMAP and module GO-BP summaries</h2><span class="hint">deterministic UMAP · BH FDR&lt;0.05</span></div>
+    <div class="phead"><h2>HDBSCAN clustering summaries</h2><span class="hint">min_cluster_size=5 · min_samples=3 · noise retained</span></div>
     <div class="figure-grid">
-      <figure><a href="figures/deepSplit_2_4_UMAP.png" target="_blank"><img src="figures/deepSplit_2_4_UMAP.png" alt="deepSplit 2 and 4 UMAP"></a><figcaption>Shared UMAP coordinates coloured by deepSplit=2 and deepSplit=4 modules.</figcaption></figure>
-      <figure><a href="figures/deepSplit_2_GOBP_heatmap.png" target="_blank"><img src="figures/deepSplit_2_GOBP_heatmap.png" alt="deepSplit 2 GO-BP heatmap"></a><figcaption>Top significant module GO Biological Process terms, deepSplit=2.</figcaption></figure>
-      <figure><a href="figures/deepSplit_4_GOBP_heatmap.png" target="_blank"><img src="figures/deepSplit_4_GOBP_heatmap.png" alt="deepSplit 4 GO-BP heatmap"></a><figcaption>Top significant module GO Biological Process terms, deepSplit=4.</figcaption></figure>
-      <figure><a href="figures/deepSplit_4_heatmap.png" target="_blank"><img src="figures/deepSplit_4_heatmap.png" alt="deepSplit 4 clustered heatmap"></a><figcaption>Publication-resolution clustered similarity heatmap; switch the interactive view above for either cut.</figcaption></figure>
+      <figure><a href="figures/HDBSCAN_UMAP.png" target="_blank"><img src="figures/HDBSCAN_UMAP.png" alt="HDBSCAN UMAP"></a><figcaption>UMAP visualization coloured by HDBSCAN cluster; grey points are density-defined noise.</figcaption></figure>
+      <figure><a href="figures/HDBSCAN_similarity_heatmap.png" target="_blank"><img src="figures/HDBSCAN_similarity_heatmap.png" alt="HDBSCAN similarity heatmap"></a><figcaption>Pearson-similarity matrix grouped by HDBSCAN cluster. No cluster-level GO-BP term passed BH FDR&lt;0.05; per-perturbation directional GO-BP remains available below.</figcaption></figure>
     </div>
   </section>
 </main>

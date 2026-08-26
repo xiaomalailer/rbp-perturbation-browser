@@ -1,0 +1,24 @@
+{
+  "n": 65,
+  "clusters": 2,
+  "noise": 22,
+  "cluster_sizes": {
+    "0": 22,
+    "1": 26,
+    "2": 17
+  },
+  "non_noise_silhouette": 0.46403147038317694,
+  "parameters": {
+    "filter": "AD>5",
+    "guide_deduplication": "maximum AD count",
+    "self_masking": true,
+    "clustering": "sklearn.cluster.HDBSCAN",
+    "metric": "Euclidean on complete Pearson-similarity profiles",
+    "min_cluster_size": 5,
+    "min_samples": 3,
+    "cluster_selection_method": "eom",
+    "noise_label": 0,
+    "ordering": "HDBSCAN cluster, then prior Ward leaf order within cluster"
+  },
+  "significant_GOBP": 0
+}
