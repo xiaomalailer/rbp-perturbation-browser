@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RBP Perturbation Similarity Browser (Li Lab)</title>
+<title>Modification Enzyme Perturbation Browser (Li Lab)</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -131,13 +131,19 @@
     display:none;align-items:center;justify-content:center;flex:0 0 auto;font-family:"IBM Plex Mono";}
   .relrow.has-info .relinfo{display:inline-flex}
   .relrow{grid-template-columns:96px 1fr 52px !important}
+  .figure-gallery{grid-column:1/-1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
+  .figure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  .figure-grid figure{margin:0;border:1px solid var(--line);border-radius:9px;padding:10px;background:#fafcfd}
+  .figure-grid img{width:100%;height:auto;display:block}
+  .figure-grid figcaption{font-size:12px;color:var(--muted);padding:8px 4px 2px}
+  @media(max-width:900px){.figure-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <header>
   <div class="brand">
-    <b>RBP Perturbation Similarity Browser</b>
+    <b>Modification Enzyme Perturbation Browser</b>
     <span id="metrictag">pearson similarity · perturb-seq</span>
   </div>
   <div class="modechips" id="metricchips" style="display:none"></div>
@@ -148,14 +154,14 @@
            style="width:110px;accent-color:var(--accent)">
     <span id="zlimval" style="font-family:'IBM Plex Mono';font-size:12px;color:var(--accent-ink);font-weight:700;min-width:32px;">0.60</span>
   </div>
-  <div class="datatag">Li Lab · <b>1,376 RBPs</b></div>
-  <a class="btn" href="modification/">Modification enzymes</a>
+  <div class="datatag">Li Lab · <b>65 enzymes</b></div>
+  <a class="btn" href="../">All RBPs</a>
   <button class="btn primary" id="resetbtn">Reset view</button>
 </header>
 
 <section class="project-intro">
   <div class="hero">
-    <h1>RBP Perturbation Similarity Browser (Li Lab)</h1>
+    <h1>Modification Enzyme Perturbation Browser (Li Lab)</h1>
     <div class="owner">Person responsible · BEA KAI QUAN</div>
   </div>
   <div class="provenance">
@@ -167,10 +173,10 @@
       <p><b>Shape:</b> 11,258 perturbations × 8,248 genes · <b>Values:</b> z-scores</p>
     </article>
     <article class="source-card">
-      <h2>RBP Genes Data</h2>
-      <p><b>Source:</b> <a href="http://research.gzsys.org.cn/rbpworld" target="_blank" rel="noopener">RBPWorld</a> (Liao et al., 2025)</p>
-      <p><b>Human RBP:</b> 3,030</p>
-      <p><b>Matching in K562 GWPS (available in this browser):</b> 1,376</p>
+      <h2>RNA Modification Enzyme Data</h2>
+      <p><b>Source:</b> curated modification-only Excel dataset supplied for this analysis</p>
+      <p><b>Catalogue:</b> 139 unique genes · <b>K562 matches:</b> 125</p>
+      <p><b>Available after max-AD guide deduplication and strict AD&gt;5 filter:</b> 65</p>
     </article>
   </div>
 </section>
@@ -179,20 +185,20 @@
   <!-- LEFT: main heatmap -->
   <section class="panel">
     <div class="phead">
-      <h2>Integrated RBP map</h2>
-      <span class="hint" id="mainhint">click a cell → focus RBP · drag-select a block → gene list</span>
+      <h2>Integrated modification-enzyme map</h2>
+      <span class="hint" id="mainhint">click a cell → focus enzyme · drag-select a block → gene list</span>
     </div>
     <div class="pbody">
       <div class="controls">
         <div class="field" style="max-width:130px;flex:0 0 auto">
           <label>View</label>
           <div class="modechips">
-            <div class="mchip on" data-mode="rbp" id="mode-rbp">RBP</div>
+            <div class="mchip on" data-mode="rbp" id="mode-rbp">Enzyme</div>
             <div class="mchip" data-mode="module" id="mode-module">Module</div>
           </div>
         </div>
         <div class="field" id="rbpfield">
-          <label>Choose an RBP</label>
+          <label>Choose an enzyme</label>
           <input type="search" id="rbpsearch" list="rbplist" placeholder="e.g. DDX21, EIF4G2…" autocomplete="off">
           <datalist id="rbplist"></datalist>
         </div>
@@ -201,7 +207,7 @@
           <select id="moduleselect"></select>
         </div>
         <div class="field" style="max-width:220px">
-          <label>Related RBPs shown</label>
+          <label>Related enzymes shown</label>
           <div class="rangewrap">
             <input type="range" id="topn" min="4" max="30" value="12">
             <span class="rangeval" id="topnval">12</span>
@@ -251,20 +257,20 @@
         <div id="geneinfo-card"></div>
         <div id="subplot"></div>
         <div id="subplaceholder" class="placeholder">
-          Pick an RBP or a module to see its similarity block here.
+          Pick an enzyme or a module to see its similarity block here.
         </div>
       </div>
     </section>
 
     <section class="panel">
       <div class="phead">
-        <h2 id="reltitle">Related RBPs</h2>
+        <h2 id="reltitle">Related enzymes</h2>
         <span class="hint"><button class="btn" style="padding:4px 10px;font-size:11px" id="csvbtn">Export CSV</button></span>
       </div>
       <div class="pbody">
         <div id="related"></div>
         <div id="relplaceholder" class="placeholder" style="height:auto;padding:26px 10px">
-          Ranked partners of the selected RBP appear here.
+          Ranked partners of the selected enzyme appear here.
         </div>
       </div>
     </section>
@@ -290,7 +296,7 @@
       <span class="hint">volcano plot · significant response GO-BP</span>
     </div>
     <div class="pbody">
-      <div id="detailstatus" class="detail-status">Select an RBP to load its analysis.</div>
+      <div id="detailstatus" class="detail-status">Select an enzyme to load its analysis.</div>
       <div id="detailcontent" style="display:none">
         <div class="detail-summary" id="detailsummary"></div>
         <div id="volcanoplot"></div>
@@ -301,10 +307,19 @@
       </div>
     </div>
   </section>
+  <section class="figure-gallery">
+    <div class="phead"><h2>UMAP and module GO-BP summaries</h2><span class="hint">deterministic UMAP · BH FDR&lt;0.05</span></div>
+    <div class="figure-grid">
+      <figure><a href="figures/deepSplit_2_4_UMAP.png" target="_blank"><img src="figures/deepSplit_2_4_UMAP.png" alt="deepSplit 2 and 4 UMAP"></a><figcaption>Shared UMAP coordinates coloured by deepSplit=2 and deepSplit=4 modules.</figcaption></figure>
+      <figure><a href="figures/deepSplit_2_GOBP_heatmap.png" target="_blank"><img src="figures/deepSplit_2_GOBP_heatmap.png" alt="deepSplit 2 GO-BP heatmap"></a><figcaption>Top significant module GO Biological Process terms, deepSplit=2.</figcaption></figure>
+      <figure><a href="figures/deepSplit_4_GOBP_heatmap.png" target="_blank"><img src="figures/deepSplit_4_GOBP_heatmap.png" alt="deepSplit 4 GO-BP heatmap"></a><figcaption>Top significant module GO Biological Process terms, deepSplit=4.</figcaption></figure>
+      <figure><a href="figures/deepSplit_4_heatmap.png" target="_blank"><img src="figures/deepSplit_4_heatmap.png" alt="deepSplit 4 clustered heatmap"></a><figcaption>Publication-resolution clustered similarity heatmap; switch the interactive view above for either cut.</figcaption></figure>
+    </div>
+  </section>
 </main>
 
 <div class="footnote">
-  Static public browser · select any RBP to view its perturbation volcano plot and GO-BP enrichment ·
+  Static public browser · select any enzyme to view its perturbation volcano plot and GO-BP enrichment ·
   drag-select heatmap → gene list + zoomed panel · colour scale adjustable in header.
 </div>
 
@@ -348,7 +363,7 @@ function geneInfoTooltip(lab){
   else if(d.proteinName) bits.push(d.proteinName);
   return bits.join(" — ");
 }
-/* 信息卡：选中某个 RBP 时，在 sub-heatmap 上方展示完整信息 */
+/* 信息卡：选中某个 enzyme 时，在 sub-heatmap 上方展示完整信息 */
 function renderGeneInfoCard(lab){
   const card=document.getElementById("geneinfo-card");
   const d=geneInfo(lab);
@@ -460,7 +475,7 @@ function setMetric(name){
   if(!DATA.moduleNames)DATA.moduleNames=uniq.sort((a,b)=>a-b).map(i=>"Module "+i);
   idxOf={};DATA.labels.forEach((l,i)=>idxOf[l]=i);
   state.selected=null;state.module=null;
-  document.getElementById("metrictag").textContent=name+" similarity · "+DATA.labels.length+" RBPs"+
+  document.getElementById("metrictag").textContent=name+" similarity · "+DATA.labels.length+" enzymes"+
     (Object.keys(GENEINFO).length?` · ${Object.keys(GENEINFO).length} annotated`:"");
   const modeMod=document.getElementById("mode-module"),modList=document.getElementById("modlist");
   modeMod.style.display=DATA._noModules?"none":"";
@@ -874,7 +889,7 @@ document.getElementById("gl-clear").onclick=()=>{
 function flash(id,msg){const b=document.getElementById(id);const t=b.textContent;b.textContent=msg;setTimeout(()=>b.textContent=t,1500);}
 
 /* ============================================================
-   RBP / Module selection
+   enzyme / Module selection
    ============================================================ */
 function selectRBP(lab){
   if(idxOf[lab]===undefined)return;
@@ -921,7 +936,7 @@ function drawSub(order,selLab,modId,customTitle){
   }else{
     const c=MODULE_COLORS[(modId-1)%MODULE_COLORS.length];
     const nm=DATA.moduleNames[modId-1]||("Module "+modId);
-    head.innerHTML=`<span class="modpill mono" style="background:${c}">M${modId}</span><span class="muted">${nm} · ${n} RBPs</span>`;
+    head.innerHTML=`<span class="modpill mono" style="background:${c}">M${modId}</span><span class="muted">${nm} · ${n} enzymes</span>`;
   }
   const t={z,x:labs,y:labs,type:"heatmap",colorscale:getRDBU(),zmin:-ZLIM,zmax:ZLIM,zmid:0,
     xgap:1,ygap:1,hovertemplate:"%{y} ↔ %{x}<br>%{z:.3f}<extra></extra>",showscale:false};
@@ -994,15 +1009,15 @@ function clearFocus(){
   document.getElementById("subhead").innerHTML="";
   document.getElementById("geneinfo-card").style.display="none";
   document.getElementById("related").innerHTML="";
-  document.getElementById("reltitle").textContent="Related RBPs";
+  document.getElementById("reltitle").textContent="Related enzymes";
   document.getElementById("rbpsearch").value="";
-  document.getElementById("mainhint").textContent="click a cell → focus RBP · drag-select a block → gene list";
+  document.getElementById("mainhint").textContent="click a cell → focus enzyme · drag-select a block → gene list";
   try{Plotly.purge("subplot");}catch(e){}
   hidePerturbationDetail();
   if(DATA)Plotly.relayout("mainplot",{shapes:[]});
 }
 document.getElementById("csvbtn").onclick=()=>{
-  if(!state._relCSV){alert("Select an RBP or module first.");return;}
+  if(!state._relCSV){alert("Select an enzyme or module first.");return;}
   const csv=state._relCSV.map(r=>r.join(",")).join("\n");
   const blob=new Blob([csv],{type:"text/csv"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);
@@ -1059,7 +1074,8 @@ async function loadPerturbationDetail(lab){
     const response=await fetch(`details/${encodeURIComponent(lab)}.json`);if(!response.ok)throw new Error(`HTTP ${response.status}`);
     const detail=await response.json();if(request!==detailRequest)return;
     document.getElementById("detailsummary").innerHTML=[
-      `AD count · ${detail.adCount.toLocaleString()}`,`matched genes · ${detail.counts.matched.toLocaleString()}`,
+      `AD count · ${detail.adCount.toLocaleString()}`,`modification · ${escapeHtml(detail.annotation?.modification||"not annotated")}`,
+      `enzyme type · ${escapeHtml(detail.annotation?.enzymeType||"not annotated")}`,`matched genes · ${detail.counts.matched.toLocaleString()}`,
       `negative significant · ${detail.counts.negative.toLocaleString()}`,`positive significant · ${detail.counts.positive.toLocaleString()}`
     ].map(x=>`<span class="stat-chip">${x}</span>`).join("");
     drawVolcano(detail);document.getElementById("goneg").innerHTML=goTable(detail.go.negative);document.getElementById("gopos").innerHTML=goTable(detail.go.positive);
