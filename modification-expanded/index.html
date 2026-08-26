@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modification Enzyme Perturbation Browser (Li Lab)</title>
+<title>Modification Seed–Partner Perturbation Browser</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -137,13 +137,14 @@
   .figure-grid img{width:100%;height:auto;display:block}
   .figure-grid figcaption{font-size:12px;color:var(--muted);padding:8px 4px 2px}
   @media(max-width:900px){.figure-grid{grid-template-columns:1fr}}
+  #detailsection{display:none!important}
 </style>
 </head>
 <body>
 
 <header>
   <div class="brand">
-    <b>Modification Enzyme Perturbation Browser</b>
+    <b>Modification Seed–Partner Perturbation Browser</b>
     <span id="metrictag">pearson similarity · perturb-seq</span>
   </div>
   <div class="modechips" id="metricchips" style="display:none"></div>
@@ -154,15 +155,14 @@
            style="width:110px;accent-color:var(--accent)">
     <span id="zlimval" style="font-family:'IBM Plex Mono';font-size:12px;color:var(--accent-ink);font-weight:700;min-width:32px;">0.60</span>
   </div>
-  <div class="datatag">Li Lab · <b>65 enzymes</b></div>
-  <a class="btn" href="../modification-expanded/">Seed + partners</a>
-  <a class="btn" href="../">All RBPs</a>
+  <div class="datatag">Li Lab · <b>170 perturbations</b></div>
+  <a class="btn" href="../modification/">65-enzyme map</a>
   <button class="btn primary" id="resetbtn">Reset view</button>
 </header>
 
 <section class="project-intro">
   <div class="hero">
-    <h1>Modification Enzyme Perturbation Browser (Li Lab)</h1>
+    <h1>Modification Enzymes + Correlated Perturbations</h1>
     <div class="owner">Person responsible · BEA KAI QUAN</div>
   </div>
   <div class="provenance">
@@ -174,10 +174,10 @@
       <p><b>Shape:</b> 11,258 perturbations × 8,248 genes · <b>Values:</b> z-scores</p>
     </article>
     <article class="source-card">
-      <h2>RNA Modification Enzyme Data</h2>
-      <p><b>Source:</b> curated modification-only Excel dataset supplied for this analysis</p>
-      <p><b>Catalogue:</b> 139 unique genes · <b>K562 matches:</b> 125</p>
-      <p><b>Available after max-AD guide deduplication and strict AD&gt;5 filter:</b> 65</p>
+      <h2>Seed and Partner Selection</h2>
+      <p><b>Seeds:</b> 65 modification enzymes retained at AD&gt;5</p>
+      <p><b>Partners:</b> top five AD&gt;5 perturbations per seed where Pearson r≥0.3</p>
+      <p><b>Result:</b> 105 unique partners · 170 total perturbations · 202 seed–partner links</p>
     </article>
   </div>
 </section>
@@ -309,11 +309,10 @@
     </div>
   </section>
   <section class="figure-gallery">
-    <div class="phead"><h2>HDBSCAN clustering summaries</h2><span class="hint">min_cluster_size=4 · min_samples=3 · noise retained</span></div>
+    <div class="phead"><h2>Expanded HDBSCAN clustering summaries</h2><span class="hint">9 clusters · 35 noise · min_cluster_size=4 · min_samples=3</span></div>
     <div class="figure-grid">
-      <figure><a href="figures/HDBSCAN_UMAP.png" target="_blank"><img src="figures/HDBSCAN_UMAP.png" alt="HDBSCAN UMAP"></a><figcaption>UMAP visualization coloured by HDBSCAN cluster; grey points are density-defined noise.</figcaption></figure>
-      <figure><a href="figures/HDBSCAN_similarity_heatmap.png" target="_blank"><img src="figures/HDBSCAN_similarity_heatmap.png" alt="HDBSCAN similarity heatmap"></a><figcaption>Pearson-similarity matrix grouped by HDBSCAN cluster. No cluster-level GO-BP term passed BH FDR&lt;0.05; per-perturbation directional GO-BP remains available below.</figcaption></figure>
-      <figure><a href="figures/HDBSCAN_cluster_GOBP_exploratory.png" target="_blank"><img src="figures/HDBSCAN_cluster_GOBP_exploratory.png" alt="HDBSCAN cluster GO-BP exploratory heatmap"></a><figcaption>Top GO-BP patterns for all four HDBSCAN clusters. Colour represents nominal −log10(p); none passes global BH FDR&lt;0.05. <a href="results/cluster_GOBP_top_exploratory.tsv">Top terms TSV</a> · <a href="results/cluster_GOBP_all.tsv">all 158 tests</a>.</figcaption></figure>
+      <figure><a href="figures/expanded_HDBSCAN_UMAP.png" target="_blank"><img src="figures/expanded_HDBSCAN_UMAP.png" alt="Expanded HDBSCAN UMAP"></a><figcaption>UMAP of 65 seed enzymes plus 105 unique correlated partners. Seed labels are shown; grey points are noise.</figcaption></figure>
+      <figure><a href="figures/expanded_HDBSCAN_heatmap.png" target="_blank"><img src="figures/expanded_HDBSCAN_heatmap.png" alt="Expanded HDBSCAN heatmap"></a><figcaption>Similarity matrix grouped by HDBSCAN cluster. <a href="results/seed_top5_partners_r_ge_0.3.tsv">Seed–partner links</a> · <a href="results/expanded_HDBSCAN_assignments.tsv">cluster assignments</a>.</figcaption></figure>
     </div>
   </section>
 </main>
